@@ -2,7 +2,7 @@
 require 'twitter'
 
 
-
+#ユーザ名を指定してプロフィールを表示
 screen_name = String.new ARGV[0]
 
 a_user = Twitter.user(screen_name)
