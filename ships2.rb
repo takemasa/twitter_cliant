@@ -34,8 +34,6 @@ counter = 0
 
 # 無限ループ
 while counter == 0  do
-    # 5秒に一回が限界速度
-    sleep(10)
     begin
       # 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え
       # ※最初はsince_id=0であるため、tweet ID 0以降のTweetから最新のもの上位100件を取得
@@ -62,6 +60,9 @@ File.open("#{ARGV[0]}.txt",'a'){|f|
         #  次はこのID以降のTweetが取得される
         since_id=status.id
       end
+
+    # 5秒に一回が限界速度
+    sleep(10)
 
     # 検索ワードで Tweet を取得できなかった場合の例外処理
     rescue Twitter::Error::ClientError
