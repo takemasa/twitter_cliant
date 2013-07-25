@@ -1,10 +1,18 @@
 # coding: utf-8
 require 'twitter'
-#require 'pp'
+require 'yaml'
+
+config = YAML.load_file('./config.yaml')
 
 
 
 
+Twitter.configure do |cnf|
+  cnf.consumer_key = config['consumer_key']
+  cnf.consumer_secret = config['consumer_secret']
+  cnf.oauth_token = config['oauth_token']
+  cnf.oauth_token_secret = config['oauth_token_secret']
+end
 
 #Twitter.update("ヤムチャむっちゃ無茶")
 #tmp = Twitter.search('遅延')
