@@ -28,10 +28,9 @@ end
 
 # 変数の初期化
 since_id = 0
-counter = 0
 
 # 無限ループ
-while counter == 0  do
+loop do
   begin
     # 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え
     # ※最初はsince_id=0であるため、tweet ID 0以降のTweetから最新のもの上位100件を取得
