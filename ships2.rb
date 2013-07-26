@@ -1,5 +1,6 @@
 # coding: utf-8
-require 'twitter'
+require 'bundler/setup'
+Bundler.setup
 require 'yaml'
 
 config = YAML.load_file('./config.yaml')
