@@ -12,20 +12,6 @@ Twitter.configure do |cnf|
   cnf.oauth_token_secret = config['oauth_token_secret']
 end
 
-#Twitter.update("ヤムチャむっちゃ無茶")
-#tmp = Twitter.search('遅延')
-#Twitter.user("HARIX_SS")#
-#p Twitter.search("#eki")
-#p Twitter.status(359549699868471296)
-
-#p tmp
-
-
-# Twitter.search("to:justinbieber marry me", :count => 3, :result_type => "recent").results.map do |status| 
-# 	"#{status.from_user}: #{status.text}" 
-# end
-
-
 # 変数の初期化
 since_id = 0
 
@@ -47,9 +33,8 @@ loop do
 
       print("\n")
       text = status.text.gsub(/\r\n|\r|\n/," ")
-      #text = text.gsub(/[\ud000-\udfff]/," ")
       File.open("#{ARGV[0]}.txt",'a'){|f|
-        f.write "#{text},#{status.created_at}\n" #@#{status.from_user}
+        f.write "#{text},#{status.created_at}\n"
       }
       # 取得したTweet idをsince_idに格納
       # ※古いものから新しい順(Tweet IDの昇順)に表示されるため、
