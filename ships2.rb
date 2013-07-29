@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'bundler/setup'
 Bundler.setup
+Bundler.require
 require 'yaml'
 
 config = YAML.load_file('./config.yaml')
