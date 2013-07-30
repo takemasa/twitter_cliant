@@ -40,11 +40,14 @@ File.open("../linux/#{ARGV[0]}_id.txt",'a+') {|f|
       id = status.id
     end
     # 検索ワードで Tweet を取得できなかった場合の例外処理
-    rescue Twitter::Error::ClientError
-      sleep(60)
+    rescue Twitter::Error::ClientError => e
+      sleep(10)
+      File.open("../linux/#{ARGV[0]}_error.txt",'a'){|f|
+    f.write "\n実行日時 #{day}\nerror : #{e}\n" 
+  }
     retry
   end
   # 最新tweetのidをテキストファイルに追記
   File.open("../linux/#{ARGV[0]}_id.txt",'a'){|f|
-    f.write "#{date}\n#{id}\n" 
+    f.write "\n実行日時 #{day}\nLatest Tweet:\n#{date}\n#{id}\n" 
   }
