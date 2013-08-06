@@ -1,5 +1,20 @@
-consumer_key: 
-consumer_secret: 
-oauth_token: 
-oauth_token_secret: 
+consumer_key1: 
+consumer_secret1: 
+oauth_token1: 
+oauth_token_secret1: 
+username1:
+password1:
 
+consumer_key2: 
+consumer_secret2: 
+oauth_token2: 
+oauth_token_secret2: 
+username2:
+password2:
+
+consumer_key3: 
+consumer_secret3: 
+oauth_token3: 
+oauth_token_secret3: 
+username3:
+password3:
