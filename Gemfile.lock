@@ -2,6 +2,10 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.3.5)
+    aws-sdk (1.15.0)
+      json (~> 1.4)
+      nokogiri (< 1.6.0)
+      uuidtools (~> 2.1)
     cookiejar (0.3.0)
     daemons (1.1.9)
     em-http-request (1.0.3)
@@ -20,8 +24,10 @@ GEM
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     http_parser.rb (0.5.3)
+    json (1.8.0)
     multi_json (1.7.7)
     multipart-post (1.2.0)
+    nokogiri (1.5.10)
     simple_oauth (0.2.0)
     tweetstream (2.5.0)
       daemons (~> 1.1)
@@ -33,11 +39,13 @@ GEM
       faraday (~> 0.8, < 0.10)
       multi_json (~> 1.0)
       simple_oauth (~> 0.2)
+    uuidtools (2.1.4)
     yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk
   tweetstream
   twitter
