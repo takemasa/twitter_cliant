@@ -40,7 +40,7 @@ File.open("../tweets/output/#{ARGV[0]}/check/#{ARGV[0]}_id.txt",'a+') {|f|
 
 sleep(ARGV[1].to_i * 3)
   # ARGV[0]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
-until limit == 8 do
+until limit == 7 do
   until_num = 0
   begin
     Twitter.search(ARGV[0], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
@@ -75,9 +75,10 @@ until limit == 8 do
     retry
   end
 
-  if until_num > 90
+  # 取得したツイートのおおよその量をARGV[0]_id.txtで可視化
+  if until_num > 90 && limit != 0
     until_num = "************************************************************#{until_num}********************************************************************burst!?"
-  elsif until_num > 50
+  elsif until_num > 50 && limit != 0
     until_num = "************************************************************#{until_num}*************************burst?"
   end
 
@@ -130,3 +131,4 @@ until num >= main_num && num >= limit && num>= error_num
   end
   num += 1
 end
+
