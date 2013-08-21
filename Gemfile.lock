@@ -41,6 +41,7 @@ GEM
       simple_oauth (~> 0.2)
     uuidtools (2.1.4)
     yajl-ruby (1.1.0)
+    zipruby (0.3.6)
 
 PLATFORMS
   ruby
@@ -49,3 +50,4 @@ DEPENDENCIES
   aws-sdk
   tweetstream
   twitter
+  zipruby
