@@ -38,9 +38,9 @@ File.open("../tweets/output/#{ARGV[0]}/check/#{ARGV[0]}_id.txt",'a+') {|f|
   since_id = since_id.to_i
 }
 
-sleep(ARGV[1].to_i * 2)
+sleep(ARGV[1].to_i * 3)
   # ARGV[0]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
-until limit == 10 do
+until limit == 8 do
   until_num = 0
   begin
     Twitter.search(ARGV[0], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
