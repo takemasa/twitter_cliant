@@ -33,14 +33,14 @@ num = 0  #
 FileUtils::mkdir_p("../tweets/output/#{ARGV[0]}/log") unless FileTest.exist?("../tweets/output/#{ARGV[0]}/log")
 FileUtils::mkdir_p("../tweets/output/#{ARGV[0]}/check/") unless FileTest.exist?("../tweets/output/#{ARGV[0]}/check/")
 
-File.open("../tweets/output/#{ARGV[0]}/check/#{ARGV[0]}_id.txt",'a+') {|f|
+File.open("../tweets/output/#{ARGV[0]}/check/id.txt",'a+') {|f|
   since_id = f.readlines[-1]
   since_id = since_id.to_i
 }
 
 sleep(ARGV[1].to_i * 3)
   # ARGV[0]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
-until limit == 7 do
+until limit == 6 do
   until_num = 0
   begin
     Twitter.search(ARGV[0], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
@@ -76,19 +76,24 @@ until limit == 7 do
   end
 
   # 取得したツイートのおおよその量をARGV[0]_id.txtで可視化
-  if until_num > 90 && limit != 0
-    until_num = "************************************************************#{until_num}********************************************************************burst!?"
-  elsif until_num > 50 && limit != 0
-    until_num = "************************************************************#{until_num}*************************burst?"
-  end
+  # if until_num > 90 && limit != 0
+  #   until_num = "************************************************************#{until_num}********************************************************************burst!?"
+  # elsif until_num > 50 && limit != 0
+  #   until_num = "************************************************************#{until_num}*************************burst?"
+  # end
 
-  if limit ==  0 && until_num != 0
-    arr_check[limit] = "\n\n***************************************\n実行日時 #{day}\nFirst Tweet: #{first_date}\n#{first_tw_id}\ntotal_sum #{tw_sum}\nget_sum: #{until_num}\nLatest Tweet: #{last_date}\n#{last_tw_id}" 
-  elsif limit != 0 && until_num >= 1
-    arr_check[limit] =  "\n\nFirst Tweet: #{first_date}　id: #{first_tw_id}\ntotal_sum: #{tw_sum}  get_sum: #{until_num}\nLatest Tweet: #{last_date}\n#{last_tw_id}" 
+  # if limit ==  0 && until_num != 0
+  #   arr_check[limit] = "\n\n***************************************\n実行日時 #{day}\nFirst Tweet: #{first_date}\n#{first_tw_id}\ntotal_sum #{tw_sum}\nget_sum: #{until_num}\nLatest Tweet: #{last_date}\n#{last_tw_id}" 
+  # elsif limit != 0 && until_num >= 1
+  #   arr_check[limit] =  "\n\nFirst Tweet: #{first_date}　id: #{first_tw_id}\ntotal_sum: #{tw_sum}  get_sum: #{until_num}\nLatest Tweet: #{last_date}\n#{last_tw_id}" 
+  # else
+  #   break
+  # end
+  if until_num != 0
+    arr_check[limit] = "\n#{last_tw_id}"
   else
-    break
-  end
+   break
+ end
   limit += 1 
 end
 
@@ -109,26 +114,23 @@ else
 end
 
 
-until num >= main_num && num >= limit && num>= error_num
+until num >= main_num && num>= error_num
   if num <= main_num && day.min < 30
-    File.open("../tweets/output/#{ARGV[0]}/#{ARGV[0]}_#{day.year}-#{month}-#{date}-#{hour}-0.csv",'a'){|main|
+    File.open("../tweets/output/#{ARGV[0]}/#{day.year}-#{month}-#{date}-#{hour}-0.csv",'a'){|main|
       main.write arr_main[num]
     }
   elsif num <= main_num && day.min >= 30
-    File.open("../tweets/output/#{ARGV[0]}/#{ARGV[0]}_#{day.year}-#{month}-#{date}-#{hour}-30.csv",'a'){|main|
+    File.open("../tweets/output/#{ARGV[0]}/#{day.year}-#{month}-#{date}-#{hour}-30.csv",'a'){|main|
       main.write arr_main[num]
     }
   end
-  if num <= limit
-    File.open("../tweets/output/#{ARGV[0]}/check/#{ARGV[0]}_id.txt",'a'){|check|
-      check.write arr_check[num]
-    }
-  end
   if num <= error_num && error_num != 0
-    File.open("../tweets/output/#{ARGV[0]}/check/#{ARGV[0]}_#{day.year}-#{month}-#{date}-#{hour}_error.txt",'a'){|error|
+    File.open("../tweets/output/#{ARGV[0]}/check/#{day.year}-#{month}-#{date}-#{hour}_error.txt",'a'){|error|
       error.write arr_error[num] 
     }
   end
   num += 1
 end
-
+File.open("../tweets/output/#{ARGV[0]}/check/id.txt",'a'){|check|
+  check.write arr_check[-1]
+}
