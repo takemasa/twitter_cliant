@@ -36,31 +36,31 @@ else
 end
 Dir.chdir("/home/ec2-user/twitter/tweets/#{ARGV[0]}/tweet")
 if day.min < 30
-	file = "#{ARGV[0]}_#{day.year}-#{month}-#{date}-#{hour}-0.csv"
+        file = "#{day.year}-#{month}-#{date}-#{hour}-0.csv"
 elsif day.min >= 30
-	file = "#{ARGV[0]}_#{day.year}-#{month}-#{date}-#{hour}-30.csv"
+        file = "#{day.year}-#{month}-#{date}-#{hour}-30.csv"
 end
-
 puts file
+files = files
 dir = Dir.glob("*.csv").each {|all_csv_file|
 	if all_csv_file != file
-    files = "#{all_csv_file}"
+		files = "#{all_csv_file}"
     zipfile = "#{File.basename(all_csv_file)}.zip"
     Zip::Archive.open(zipfile, Zip::CREATE) do |arc|
-      arc.add_file(files)
+    	arc.add_file(files)
     end
     p "delete! #{all_csv_file} ------------------"
     File.delete(all_csv_file)
-	elsif all_csv_file == file
-		p "keep! #{all_csv_file}"
+    elsif all_csv_file == file
+            p "keep! #{all_csv_file}"
     p "keep! #{file}^^^^^^^^^^^^^^^^^^^"
-	end
-}
-bucket = s3.buckets["dsb-twitter-test/tweets/#{ARGV[1]}"]
-dir = Dir.glob("*.zip").each {|all_zip_file|
-	p all_zip_file
-	filename = all_zip_file
-	o = bucket.objects[filename]
-	o.write(:file => filename)
-	File.delete(all_zip_file)
+    end
+    if zipfile
+        bucket = s3.buckets["dsb-twitter-test/tweets/#{ARGV[1]}/#{files[0..6]}"]
+        p zipfile
+        filename = zipfile
+        o = bucket.objects[filename]
+        o.write(:file => filename)
+        File.delete(zipfile)
+    end
 }
