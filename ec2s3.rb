@@ -8,8 +8,8 @@ require 'fileutils'
 # 第1引数は検索語句
 def ec2s3(keyword)
   day = Time.now
+  wdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
   config = YAML.load_file('./config.yaml')
-  # p "tweets/#{keyword}/tweet/を検索します"
   dir_name = config[keyword]
 
   AWS.config(
@@ -36,9 +36,9 @@ def ec2s3(keyword)
   end
 
   if day.min < 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-0_#{dir_name}.csv"
+    file = "#{day.year}-#{month}-#{date}-#{hour}-0_#{wdays[day.wday]}_#{dir_name}.csv"
   elsif day.min >= 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{dir_name}.csv"
+    file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir_name}.csv"
   end
   # puts "#{file} 以外をアップロード"
   files = files
