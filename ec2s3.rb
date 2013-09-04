@@ -35,6 +35,7 @@ def ec2s3(keyword)
     hour = day.hour
   end
 
+  # 現在収集中のツイートを書き込んでいるファイル名
   if day.min < 30
     file = "#{day.year}-#{month}-#{date}-#{hour}-0_#{wdays[day.wday]}_#{dir_name}.csv"
   elsif day.min >= 30
