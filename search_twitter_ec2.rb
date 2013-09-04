@@ -67,14 +67,15 @@ if config["#{ARGV[1]}"]
     check.write since_id
   }
 
-  sleep(ARGV[0].to_i * 2)
+
     # ARGV[1]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
   until limit == 6 do
     until_num = 0
     begin
       Twitter.search(ARGV[1], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
         text = status.text.gsub(/(\r\n|\r|\n)/," ")
-        text = text.gsub(","," ")
+        text = text.gsub(",","\\\,")
+        text = text.gsub("\"","\\\"")
 
         if status.place  # 出力は左から生成日、本文、ツイートid、ユーザ名、フォロー数、フォロワー数、ユーザid、現在地
           arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
