@@ -37,11 +37,11 @@ def ec2s3(keyword)
 
   # 現在収集中のツイートを書き込んでいるファイル名
   if day.min < 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-0_#{wdays[day.wday]}_#{dir_name}.csv"
+    file = "#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{dir_name}.csv"
   elsif day.min >= 30
     file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir_name}.csv"
   end
-  # puts "#{file} 以外をアップロード"
+   # puts "#{file} {}以外をアップロード"
   files = files
   dir = Dir.glob("*.csv").each {|all_csv_file|
     files = "#{all_csv_file}"
