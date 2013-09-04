@@ -29,6 +29,9 @@ arr_error = []
 main_num = 0  
 error_num = 0  
 num = 0  
+wdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+
+
 
 if day.month < 10
   month = "0#{day.month}"
@@ -49,10 +52,12 @@ end
 
 if config["#{ARGV[1]}"]
     # 初回実行時はディレクトリを作成 since_idは前回取得した中で最も新しいtweetのid 前回実行時の最新tweet_idを取得、なければid = 0
-  
+  FileUtils::mkdir_p("tweets/error") unless FileTest.exist?("tweets/error")
   FileUtils::mkdir_p("tweets/#{ARGV[1]}/check/") unless FileTest.exist?("tweets/#{ARGV[1]}/check/")
   FileUtils::mkdir_p("tweets/#{ARGV[1]}/tweet/") unless FileTest.exist?("tweets/#{ARGV[1]}/tweet/")
   Dir.chdir("tweets/#{ARGV[1]}")
+
+  sleep(ARGV[0].to_i * 2)
 
   File.open("check/id_#{keyword}.txt",'a+') {|f|
     since_id = f.readlines[-1]
@@ -108,16 +113,16 @@ if config["#{ARGV[1]}"]
 
   until num >= main_num && num>= error_num
     if num <= main_num && day.min < 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-0_#{keyword}.csv",'a'){|main|
+      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
         main.write arr_main[num]
       }
     elsif num <= main_num && day.min >= 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-30_#{keyword}.csv",'a'){|main|
+      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
         main.write arr_main[num]
       }
     end
     if num <= error_num && error_num != 0
-      File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{keyword}_error.txt",'a'){|error|
+      File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
         error.write arr_error[num]
       }
      end

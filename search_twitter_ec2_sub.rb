@@ -17,18 +17,21 @@ end
 
 keyword = config["#{ARGV[1]}"]
 since_id = 0    # 前回実行時に最後に取得したtweetのid
-first_tw_id = 0  #
-last_tw_id = 0  #
-first_date = 0  #
-last_date = 0  #
-tw_sum = 0  #
-limit = 0  #
-arr_main = []  #
-arr_check =[]  #
-arr_error = []  #
-main_num = 0  #
-error_num = 0  #
-num = 0  #
+first_tw_id = 0  
+last_tw_id = 0 
+first_date = 0  
+last_date = 0  
+tw_sum = 0  
+limit = 0  
+arr_main = []  
+arr_check =[]  
+arr_error = []  
+main_num = 0  
+error_num = 0  
+num = 0  
+wdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+
+
 
 if day.month < 10
   month = "0#{day.month}"
@@ -49,10 +52,12 @@ end
 
 if config["#{ARGV[1]}"]
     # 初回実行時はディレクトリを作成 since_idは前回取得した中で最も新しいtweetのid 前回実行時の最新tweet_idを取得、なければid = 0
-  
+  FileUtils::mkdir_p("tweets/error") unless FileTest.exist?("tweets/error")
   FileUtils::mkdir_p("tweets/#{ARGV[1]}/check/") unless FileTest.exist?("tweets/#{ARGV[1]}/check/")
   FileUtils::mkdir_p("tweets/#{ARGV[1]}/tweet/") unless FileTest.exist?("tweets/#{ARGV[1]}/tweet/")
   Dir.chdir("tweets/#{ARGV[1]}")
+
+  sleep(ARGV[0].to_i * 2)
 
   File.open("check/id_#{keyword}.txt",'a+') {|f|
     since_id = f.readlines[-1]
@@ -62,7 +67,6 @@ if config["#{ARGV[1]}"]
     check.write since_id
   }
 
-  sleep(ARGV[0].to_i * 2)
     # ARGV[1]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
   until limit == 4 do
     until_num = 0
@@ -98,26 +102,26 @@ if config["#{ARGV[1]}"]
       error_num += 1
       retry
     end
-       if until_num != 0
-           arr_check[limit] = "\n#{last_tw_id}"
-       else
-           break
-       end
+    if until_num != 0
+      arr_check[limit] = "\n#{last_tw_id}"
+    else
+      break
+    end
     limit += 1
   end
 
   until num >= main_num && num>= error_num
     if num <= main_num && day.min < 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-0_#{keyword}.csv",'a'){|main|
+      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
         main.write arr_main[num]
       }
     elsif num <= main_num && day.min >= 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-30_#{keyword}.csv",'a'){|main|
+      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
         main.write arr_main[num]
       }
     end
     if num <= error_num && error_num != 0
-      File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{keyword}_error.txt",'a'){|error|
+      File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
         error.write arr_error[num]
       }
      end
