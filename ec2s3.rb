@@ -41,7 +41,7 @@ def ec2s3(keyword)
   elsif day.min >= 30
     file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir_name}.csv"
   end
-   # puts "#{file} {}以外をアップロード"
+   puts "#{file} {}以外をアップロード"
   files = files
   dir = Dir.glob("*.csv").each {|all_csv_file|
     files = "#{all_csv_file}"
@@ -51,11 +51,11 @@ def ec2s3(keyword)
         Zip::Archive.open(zipfile, Zip::CREATE) do |arc|
           arc.add_file(files)
         end
-        # p "delete! #{files} ------------------"
+        p "delete! #{files} ------------------"
         File.delete(files)
     elsif File.basename(files) == file
       # p "keep! #{File.basename(files)}"
-      # p "keep! #{file}^^^^^^^^^^^^^^^^^^^"
+      p "keep! #{File.basename(files)}^^^^^^^^^^^^^^^^^^^"
     end
     dir = config["#{keyword}"]
     if zipfile
