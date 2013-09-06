@@ -68,7 +68,7 @@ if config["#{ARGV[1]}"]
   }
 
     # ARGV[1]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
-  until limit == 3 do
+  until limit == 2 do
     until_num = 0
     begin
       Twitter.search(ARGV[1], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
