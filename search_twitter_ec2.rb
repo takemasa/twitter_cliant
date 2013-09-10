@@ -25,7 +25,6 @@ first_tw_id = 0
 last_tw_id = 0 
 first_date = 0  
 last_date = 0  
-tw_sum = 0  
 limit = 0  
 arr_main = []  
 arr_check =[]  
@@ -110,7 +109,6 @@ if config[search_keyword]
         last_date = status.created_at
         last_tw_id = status.id
 
-        tw_sum += 1
         until_num += 1
         main_num += 1
       end
