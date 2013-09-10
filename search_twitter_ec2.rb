@@ -7,15 +7,19 @@ require 'fileutils'
 
 config = YAML.load_file('./config.yaml')
 day = Time.now
+
+(account_num, search_keyword) = ARGV
+
   #keyの引数を指定
 Twitter.configure do |cnf|
-  cnf.consumer_key = config["consumer_key#{ARGV[0].to_i}"]
-  cnf.consumer_secret = config["consumer_secret#{ARGV[0].to_i}"]
-  cnf.oauth_token = config["oauth_token#{ARGV[0].to_i}"]
-  cnf.oauth_token_secret = config["oauth_token_secret#{ARGV[0].to_i}"]
+  cnf.consumer_key = config["consumer_key#{account_num.to_i}"]
+  cnf.consumer_secret = config["consumer_secret#{account_num.to_i}"]
+  cnf.oauth_token = config["oauth_token#{account_num.to_i}"]
+  cnf.oauth_token_secret = config["oauth_token_secret#{account_num.to_i}"]
 end
 
-keyword = config["#{ARGV[1]}"]
+
+keyword = config[search_keyword]
 since_id = 0    # 前回実行時に最後に取得したtweetのid
 first_tw_id = 0  
 last_tw_id = 0 
@@ -49,15 +53,14 @@ else
   hour = day.hour
 end
 
-
-if config["#{ARGV[1]}"]
+if config[search_keyword]
     # 初回実行時はディレクトリを作成 since_idは前回取得した中で最も新しいtweetのid 前回実行時の最新tweet_idを取得、なければid = 0
   FileUtils::mkdir_p("tweets/error") unless FileTest.exist?("tweets/error")
-  FileUtils::mkdir_p("tweets/#{ARGV[1]}/check/") unless FileTest.exist?("tweets/#{ARGV[1]}/check/")
-  FileUtils::mkdir_p("tweets/#{ARGV[1]}/tweet/") unless FileTest.exist?("tweets/#{ARGV[1]}/tweet/")
-  Dir.chdir("tweets/#{ARGV[1]}")
+  FileUtils::mkdir_p("tweets/#{search_keyword}/check/") unless FileTest.exist?("tweets/#{search_keyword}/check/")
+  FileUtils::mkdir_p("tweets/#{search_keyword}/tweet/") unless FileTest.exist?("tweets/#{search_keyword}/tweet/")
+  Dir.chdir("tweets/#{search_keyword}")
 
-  sleep(ARGV[0].to_i * 2)
+  sleep(account_num.to_i % 10 * 2)
 
   File.open("check/id_#{keyword}.txt",'a+') {|f|
     since_id = f.readlines[-1]
@@ -68,12 +71,12 @@ if config["#{ARGV[1]}"]
   }
 
 
-    # ARGV[1]に検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
+    # search_keywordに検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
   until limit == 5 do
     until_num = 0
     begin
-      Twitter.search(ARGV[1], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
         text = status.text.gsub(/(\r\n|\r|\n)/," ")
+      Twitter.search(search_keyword, :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
         text = text.gsub(",","、")
         text = text.gsub("\"","”")
 
@@ -143,5 +146,5 @@ if config["#{ARGV[1]}"]
     check.write arr_check[-1]
   }
 else
-  puts "Please check #{ARGV[1]} in config.yaml"
+  puts "Please check #{search_keyword} in config.yaml"
 end
