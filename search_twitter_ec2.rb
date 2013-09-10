@@ -74,14 +74,24 @@ if config["#{ARGV[1]}"]
     begin
       Twitter.search(ARGV[1], :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
         text = status.text.gsub(/(\r\n|\r|\n)/," ")
-        text = text.gsub(",","\\\,")
-        text = text.gsub("\"","\\\"")
+        text = text.gsub(",","、")
+        text = text.gsub("\"","”")
 
-        if status.place  # 出力は左から生成日、本文、ツイートid、ユーザ名、フォロー数、フォロワー数、ユーザid、現在地
-          arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
-        else
-          arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id}\n"
-        end
+       if status.retweeted_status
+        rtext = status.retweeted_status.text.gsub(/(\r\n|\r|\n)/," ")
+        rtext = rtext.gsub(",","、")
+        rtext = rtext.gsub("\"","”")
+      end
+      
+       if !status.place && !status.retweeted_status
+        arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id}\n"
+       elsif !status.place && status.retweeted_status
+        arr_main[main_num] = "#{status.created_at},RT #{rtext},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id}\n"
+       elsif status.place && !status.retweeted_status
+        arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
+       else
+        arr_main[main_num] =  "#{status.created_at},RT #{rtext},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
+       end
 
         if until_num == 0
           first_date = status.created_at
