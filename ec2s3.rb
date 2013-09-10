@@ -10,7 +10,7 @@ def ec2s3(keyword)
   day = Time.now
   wdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
   config = YAML.load_file('./config.yaml')
-  dir_name = config[keyword]
+  dir = config["#{keyword}"]
 
   AWS.config(
     :access_key_id => config["aws_access_key"],
@@ -19,6 +19,9 @@ def ec2s3(keyword)
   )
   s3 = AWS::S3.new
   Dir.chdir("tweets/#{keyword}/tweet")
+
+  # 現在cronで追記を行っているファイルを格納対象から除外
+  # fileは現在追記を行っているファイル名
   if day.month < 10
     month = "0#{day.month}"
   else
@@ -34,18 +37,18 @@ def ec2s3(keyword)
   else
     hour = day.hour
   end
-
-  # 現在収集中のツイートを書き込んでいるファイル名
   if day.min < 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{dir_name}.csv"
+    file = "#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{dir}.csv"
   elsif day.min >= 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir_name}.csv"
+    file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir}.csv"
   end
-   puts "#{file} {}以外をアップロード"
+   puts "#{file} 以外をアップロード"
+
+   # filesはディレクトリ内のすべてのcsvファイル名
+   # fileとfilesが一致しなければzip圧縮して元ファイルを削除
   files = files
-  dir = Dir.glob("*.csv").each {|all_csv_file|
+  Dir.glob("*.csv").each {|all_csv_file|
     files = "#{all_csv_file}"
-    # p files
     if File.basename(files) != file
         zipfile = "#{File.basename(all_csv_file)}.zip"
         Zip::Archive.open(zipfile, Zip::CREATE) do |arc|
@@ -54,14 +57,12 @@ def ec2s3(keyword)
         p "delete! #{files} ------------------"
         File.delete(files)
     elsif File.basename(files) == file
-      # p "keep! #{File.basename(files)}"
       p "keep! #{File.basename(files)}^^^^^^^^^^^^^^^^^^^"
     end
-    dir = config["#{keyword}"]
+    # 作成したzipを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
     if zipfile
       bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}"]
-      # p zipfile
-      # puts "dsb-twitter-test/tweets/#{config["#{keyword}"]}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}に格納します"
+      puts "/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}/#{zipfile}"
       filename = File.basename(zipfile)
       o = bucket.objects[filename]
       o.write(:file => filename)
