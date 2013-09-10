@@ -106,12 +106,9 @@ if config[search_keyword]
         if until_num == 0
           first_date = status.created_at
           first_tw_id = status.id
-          last_date = status.created_at
-          last_tw_id = status.id
-        else
-          last_date = status.created_at
-          last_tw_id = status.id
         end
+        last_date = status.created_at
+        last_tw_id = status.id
 
         tw_sum += 1
         until_num += 1
