@@ -57,7 +57,7 @@ def s3toec2(dir_date,keyword)
   if dir_date != nil && keyword != nil
     puts "from tweets/#{dir_name}#{dir_date}"
     bucket = s3.buckets["dsb-twitter-test"]
-    objects = bucket.objects.with_prefix("tweets/#{dir_name}/#{dir_date}")
+    objects = bucket.objects.with_prefix("tweets/#{dir_name}#{dir_date}")
     
     objects.each do |all_file|
       o = all_file.key
