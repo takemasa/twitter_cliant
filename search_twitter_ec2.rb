@@ -31,7 +31,6 @@ arr_check =[]
 arr_error = []  
 main_num = 0  
 error_num = 0  
-num = 0  
 wdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 
 
@@ -50,6 +49,11 @@ if day.hour < 10
   hour = "0#{day.hour}"
 else
   hour = day.hour
+end
+if day.min < 30
+  half = "00"
+else
+  half = "30"
 end
 
 if config[search_keyword]
@@ -128,26 +132,22 @@ if config[search_keyword]
     limit += 1
   end
 
-  until num >= main_num && num>= error_num
-    if num <= main_num && day.min < 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
-        main.write arr_main[num]
-      }
-    elsif num <= main_num && day.min >= 30
-      File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
-        main.write arr_main[num]
-      }
-    end
-    if num <= error_num && error_num != 0
-      File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
-        error.write arr_error[num]
-      }
-     end
-    num += 1
-  end
   File.open("check/id_#{keyword}.txt",'a'){|check|
-    check.write arr_check[-1]
+    check.puts arr_check[-1]
   }
+
+  if main_num != 0
+    File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-#{half}_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
+      arr_main.each {|main| main.puts main}
+    }
+  end
+
+  if error_num != 0
+    File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
+      arr_error.each {|error| error.puts error}
+    }
+  end
+  
 else
   puts "Please check #{search_keyword} in config.yaml"
 end
