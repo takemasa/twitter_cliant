@@ -75,27 +75,34 @@ if config[search_keyword]
   until limit == 5 do
     until_num = 0
     begin
-        text = status.text.gsub(/(\r\n|\r|\n)/," ")
       Twitter.search(search_keyword, :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
+        # テキストのクリーニング
+        if status.retweeted_status.nil?
+          text = status.text
+        else
+          text = "RT #{status.retweeted_status.text}"
+        end
+        text = text.gsub(/(\r\n|\r|\n)/," ")
         text = text.gsub(",","、")
         text = text.gsub("\"","”")
 
-       if status.retweeted_status
-        rtext = status.retweeted_status.text.gsub(/(\r\n|\r|\n)/," ")
-        rtext = rtext.gsub(",","、")
-        rtext = rtext.gsub("\"","”")
-      end
-      
-       if !status.place && !status.retweeted_status
-        arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id}\n"
-       elsif !status.place && status.retweeted_status
-        arr_main[main_num] = "#{status.created_at},RT #{rtext},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id}\n"
-       elsif status.place && !status.retweeted_status
-        arr_main[main_num] =  "#{status.created_at},#{text},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
-       else
-        arr_main[main_num] =  "#{status.created_at},RT #{rtext},#{status.id},#{status.user.screen_name},#{status.user.friends_count},#{status.user.followers_count},#{status.retweet_count},#{status.user.id},#{status.place.full_name}\n"
-       end
 
+        # レコードの項目
+        record_ary = [
+          status.created_at,
+          text,
+          status.id,
+          status.user.screen_name,
+          status.user.friends_count,
+          status.user.followers_count,
+          status.retweet_count,
+          status.user.id
+        ]
+        # 位置情報が存在する場合は追加
+        record_ary << status.place.full_name if status.place           
+
+        arr_main[main_num] = record_ary.join(",")
+      
         if until_num == 0
           first_date = status.created_at
           first_tw_id = status.id
