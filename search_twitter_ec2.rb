@@ -119,9 +119,13 @@ if config[search_keyword]
       end
       since_id = last_tw_id
       sleep(2)
+    rescue Twitter::Error::TooManyRequets
+      break
     rescue Twitter::Error::ClientError => e
-      arr_error[error_num] = "\n実行日時 #{day}   エラー発生日時 #{Time.now}\nerror : #{e}\n"
+      arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
+      sleep 1
+
       retry
     end
     if until_num != 0
