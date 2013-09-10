@@ -62,7 +62,7 @@ if config[search_keyword]
 
   sleep(account_num.to_i % 10 * 2)
 
-  File.open("check/id_#{keyword}.txt",'a+') {|f|
+  File.open("check/id_#{keyword}.txt",'r') {|f|
     since_id = f.readlines[-1]
     since_id = since_id.to_i
   }
