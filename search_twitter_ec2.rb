@@ -125,11 +125,8 @@ if config[search_keyword]
 
       retry
     end
-    if until_num != 0
-       arr_check[limit] = "\n#{last_tw_id}"
-    else
-      break
-    end
+
+    arr_check[limit] = last_tw_id
     limit += 1
   end
 
