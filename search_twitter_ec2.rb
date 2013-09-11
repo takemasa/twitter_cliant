@@ -138,13 +138,13 @@ if config[search_keyword]
 
   if main_num != 0
     File.open("tweet/#{day.year}-#{month}-#{date}-#{hour}-#{half}_#{wdays[day.wday]}_#{keyword}.csv",'a'){|main|
-      arr_main.each {|main| main.puts main}
+      main.puts arr_main
     }
   end
 
   if error_num != 0
     File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
-      arr_error.each {|error| error.puts error}
+      error.puts arr_error
     }
   end
   
