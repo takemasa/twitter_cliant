@@ -69,9 +69,7 @@ if config[search_keyword]
     since_id = f.readlines[-1]
     since_id = since_id.to_i
   }
-  File.open("check/id_#{keyword}.txt",'w'){|check|
-    check.write since_id
-  }
+  File.open("check/id_#{keyword}.txt",'w')
 
 
     # search_keywordに検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
