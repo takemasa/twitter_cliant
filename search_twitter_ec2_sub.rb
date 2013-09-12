@@ -69,9 +69,7 @@ if config[search_keyword]
     since_id = f.readlines[-1]
     since_id = since_id.to_i
   }
-  File.open("check/id_#{keyword}.txt",'w'){|check|
-    check.write since_id
-  }
+  File.open("check/id_#{keyword}.txt",'w')
 
 
     # search_keywordに検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
@@ -120,6 +118,9 @@ if config[search_keyword]
       sleep(10)
     rescue Twitter::Error::TooManyRequests
       break
+    rescue
+      Twitter::Error::ServiceUnavailable
+      break
     rescue Twitter::Error::ClientError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
@@ -133,7 +134,7 @@ if config[search_keyword]
   end
 
   File.open("check/id_#{keyword}.txt",'a'){|check|
-    check.puts arr_check[-1]
+    check.puts arr_check
   }
 
   if main_num != 0
@@ -143,7 +144,7 @@ if config[search_keyword]
   end
 
   if error_num != 0
-    File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a'){|error|
+    File.open("../error/#{day.year}-#{month}-#{date}-#{hour}_#{wdays[day.wday]}_#{keyword}_error.txt",'a+'){|error|
       error.puts arr_error
     }
   end
