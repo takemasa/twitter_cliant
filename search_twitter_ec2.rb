@@ -133,7 +133,7 @@ if config[search_keyword]
   end
 
   File.open("check/id_#{keyword}.txt",'a'){|check|
-    check.puts arr_check[-1]
+    check.puts arr_check
   }
 
   if main_num != 0
