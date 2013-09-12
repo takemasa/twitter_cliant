@@ -120,8 +120,7 @@ if config[search_keyword]
       sleep(2)
     rescue Twitter::Error::TooManyRequests
       break
-    rescue
-      Twitter::Error::ServiceUnavailable
+    rescue Twitter::Error::ServiceUnavailable
       break
     rescue Twitter::Error::ClientError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
