@@ -63,7 +63,7 @@ def ec2s3(keyword)
     elsif File.basename(files) == file
       p "keep! #{File.basename(files)}^^^^^^^^^^^^^^^^^^^"
     end
-    作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
+    # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
     if gzfile
       bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}"]
       puts "/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}/#{gzfile}"
