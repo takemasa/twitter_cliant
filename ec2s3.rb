@@ -45,28 +45,32 @@ def ec2s3(keyword)
    puts "#{file} 以外をアップロード"
 
    # filesはディレクトリ内のすべてのcsvファイル名
-   # fileとfilesが一致しなければzip圧縮して元ファイルを削除
+   # fileとfilesが一致しなければgz圧縮して元ファイルを削除
   files = files
   Dir.glob("*.csv").each {|all_csv_file|
     files = "#{all_csv_file}"
     if File.basename(files) != file
-        zipfile = "#{File.basename(all_csv_file)}.zip"
-        Zip::Archive.open(zipfile, Zip::CREATE) do |arc|
-          arc.add_file(files)
-        end
-        p "delete! #{files} ------------------"
-        File.delete(files)
+      tmp = nil
+      gzfile = "#{File.basename(all_csv_file)}.gz"
+      File.open(all_csv_file,'a+') {|f|
+        tmp = f.read
+      }
+      Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
+        gz.write tmp
+      }
+      p "delete! #{files} ------------------"
+      File.delete(files)
     elsif File.basename(files) == file
       p "keep! #{File.basename(files)}^^^^^^^^^^^^^^^^^^^"
     end
-    # 作成したzipを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
-    if zipfile
+    作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
+    if gzfile
       bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}"]
-      puts "/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}/#{zipfile}"
-      filename = File.basename(zipfile)
+      puts "/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}/#{gzfile}"
+      filename = File.basename(gzfile)
       o = bucket.objects[filename]
       o.write(:file => filename)
-      File.delete(zipfile)
+      File.delete(gzfile)
     end
   }
 end
