@@ -121,23 +121,20 @@ if config[search_keyword]
       error_num += 1
       break
     rescue Twitter::Error::ServiceUnavailable => e
-      sleep(2)
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "ServiceUnavailable:#{e}"].join("\t")
       error_num += 1
       limit += 1
-      retry
-    rescue Twitter::Error::InternalServerError => e
       sleep(2)
+    rescue Twitter::Error::InternalServerError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "InternalServerError:#{e}"].join("\t")
       error_num += 1
       limit += 1
-      retry
+      sleep(2)
     rescue Twitter::Error::ClientError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "ClientError:#{e}"].join("\t")
       error_num += 1
       limit += 1
       sleep(2)
-      retry
     end
 
     arr_check[limit] = last_tw_id
