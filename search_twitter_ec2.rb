@@ -115,7 +115,7 @@ if config[search_keyword]
         until_num += 1
         main_num += 1
       end
-      since_id = last_tw_id
+      since_id = last_tw_id if last_tw_id > 0
       sleep(2)
     rescue Twitter::Error::TooManyRequests => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
@@ -140,11 +140,9 @@ if config[search_keyword]
       sleep(2)
       retry
     end
-
-    arr_check << last_tw_id
+    arr_check << last_tw_id if last_tw_id > 0
     limit += 1
   end
-
   File.open("check/id_#{keyword}.txt",'a'){|check|
     check.puts arr_check
   }
