@@ -68,6 +68,7 @@ if config[search_keyword]
   File.open("check/id_#{keyword}.txt",'a+') {|f|
     since_id = f.readlines[-1]
     since_id = since_id.to_i
+    arr_check << since_id
   }
   File.open("check/id_#{keyword}.txt",'w')
 
@@ -140,7 +141,7 @@ if config[search_keyword]
       retry
     end
 
-    arr_check[limit] = last_tw_id
+    arr_check << last_tw_id
     limit += 1
   end
 
