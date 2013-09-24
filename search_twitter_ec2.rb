@@ -74,7 +74,7 @@ if config[search_keyword]
 
 
     # search_keywordに検索語句 引数で受け取ったワードを元に、検索結果を取得し、古いものから順に並び替え since_id以降のtweetから時系列順に100件を取得
-  until limit == 5 do
+  until limit >= 5 do
     until_num = 0
     begin
       Twitter.search(search_keyword, :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
@@ -126,19 +126,16 @@ if config[search_keyword]
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
       limit += 1
-      retry
     rescue Twitter::Error::InternalServerError => e
       sleep(2)
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
       limit += 1
-      retry
     rescue Twitter::Error::ClientError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
       limit += 1
       sleep(2)
-      retry
     end
     arr_check << last_tw_id if last_tw_id > 0
     limit += 1
