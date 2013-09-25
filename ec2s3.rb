@@ -38,35 +38,37 @@ def ec2s3(keyword)
     hour = day.hour
   end
   if day.min < 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-00_#{wdays[day.wday]}_#{dir}.csv"
+    min = 00
   elsif day.min >= 30
-    file = "#{day.year}-#{month}-#{date}-#{hour}-30_#{wdays[day.wday]}_#{dir}.csv"
+    min = 30
   end
-   puts "#{file} 以外をアップロード"
 
-   # filesはディレクトリ内のすべてのcsvファイル名
-   # fileとfilesが一致しなければgz圧縮して元ファイルを削除
-  files = files
+  updatingfile = "#{day.year}-#{month}-#{date}-#{hour}-#{min}_#{wdays[day.wday]}_#{dir}.csv"
+  puts "#{updatingfile} 以外をアップロード"
+
+   # fillenameはディレクトリ内のすべてのcsvファイル名
+   # updatingfileとfillenameが一致しなければgz圧縮して元ファイルを削除
+  fillename = "fillename"
   Dir.glob("*.csv").each {|all_csv_file|
-    files = "#{all_csv_file}"
-    if File.basename(files) != file
-      tmp = nil
+    fillename = "#{all_csv_file}"
+    if File.basename(fillename) != updatingfile
+      csvtext = nil
       gzfile = "#{File.basename(all_csv_file)}.gz"
       File.open(all_csv_file,'a+') {|f|
-        tmp = f.read
+        csvtext = f.read
       }
       Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
-        gz.write tmp
+        gz.write csvtext
       }
-      p "delete! #{files} ------------------"
-      File.delete(files)
-    elsif File.basename(files) == file
-      p "keep! #{File.basename(files)}^^^^^^^^^^^^^^^^^^^"
+      p "delete! #{fillename} ------------------"
+      File.delete(fillename)
+    elsif File.basename(fillename) == updatingfile
+      p "keep! #{File.basename(fillename)}^^^^^^^^^^^^^^^^^^^"
     end
     # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
     if gzfile
-      bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}"]
-      puts "/#{dir}/#{File.basename(files)[0..3]}/#{File.basename(files)[5..6]}/#{File.basename(files)[8..9]}/#{gzfile}"
+      bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(fillename)[0..3]}/#{File.basename(fillename)[5..6]}/#{File.basename(fillename)[8..9]}"]
+      puts "/#{dir}/#{File.basename(fillename)[0..3]}/#{File.basename(fillename)[5..6]}/#{File.basename(fillename)[8..9]}/#{gzfile}"
       filename = File.basename(gzfile)
       o = bucket.objects[filename]
       o.write(:file => filename)
