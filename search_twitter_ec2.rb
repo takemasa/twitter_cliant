@@ -100,7 +100,7 @@ if config[search_keyword]
           status.retweet_count,
           status.user.id
         ]
-        # 位置情報が存在する場合は追加
+        # 位置情報("")が存在する場合は追加、しない場合は","を挿入し、","で連結
         if !status.place
           record_ary << ","
         else
