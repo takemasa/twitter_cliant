@@ -52,13 +52,11 @@ def ec2s3(keyword)
   Dir.glob("*.csv").each {|all_csv_file|
     filename = all_csv_file
     if File.basename(filename) != updatingfile
-      csvtext = nil
       gzfile = "#{File.basename(all_csv_file)}.gz"
       File.open(all_csv_file,'a+') {|f|
-        csvtext = f.read
-      }
-      Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
-        gz.write csvtext
+        Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
+          gz.write f.read
+        }
       }
       p "delete! #{filename} ------------------"
       File.delete(filename)
