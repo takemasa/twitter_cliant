@@ -50,7 +50,7 @@ def ec2s3(keyword)
    # updatingfileとfilenameが一致しなければgz圧縮して元ファイルを削除
   filename = "filename"
   Dir.glob("*.csv").each {|all_csv_file|
-    filename = "#{all_csv_file}"
+    filename = all_csv_file
     if File.basename(filename) != updatingfile
       csvtext = nil
       gzfile = "#{File.basename(all_csv_file)}.gz"
