@@ -101,7 +101,11 @@ if config[search_keyword]
           status.user.id
         ]
         # 位置情報が存在する場合は追加
-        record_ary << status.place.full_name if status.place           
+        if !status.place
+          record_ary << ","
+        else
+          record_ary << status.place.full_name
+        end         
 
         arr_main[main_num] = record_ary.join(",")
       
