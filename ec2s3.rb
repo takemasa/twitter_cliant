@@ -46,12 +46,12 @@ def ec2s3(keyword)
   updatingfile = "#{day.year}-#{month}-#{date}-#{hour}-#{min}_#{wdays[day.wday]}_#{dir}.csv"
   puts "#{updatingfile} 以外をアップロード"
 
-   # fillenameはディレクトリ内のすべてのcsvファイル名
-   # updatingfileとfillenameが一致しなければgz圧縮して元ファイルを削除
-  fillename = "fillename"
+   # filenameはディレクトリ内のすべてのcsvファイル名
+   # updatingfileとfilenameが一致しなければgz圧縮して元ファイルを削除
+  filename = "filename"
   Dir.glob("*.csv").each {|all_csv_file|
-    fillename = "#{all_csv_file}"
-    if File.basename(fillename) != updatingfile
+    filename = "#{all_csv_file}"
+    if File.basename(filename) != updatingfile
       csvtext = nil
       gzfile = "#{File.basename(all_csv_file)}.gz"
       File.open(all_csv_file,'a+') {|f|
@@ -60,15 +60,15 @@ def ec2s3(keyword)
       Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
         gz.write csvtext
       }
-      p "delete! #{fillename} ------------------"
-      File.delete(fillename)
+      p "delete! #{filename} ------------------"
+      File.delete(filename)
     else
-      p "keep! #{File.basename(fillename)}^^^^^^^^^^^^^^^^^^^"
+      p "keep! #{File.basename(filename)}^^^^^^^^^^^^^^^^^^^"
     end
     # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
     if gzfile
-      bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(fillename)[0..3]}/#{File.basename(fillename)[5..6]}/#{File.basename(fillename)[8..9]}"]
-      puts "/#{dir}/#{File.basename(fillename)[0..3]}/#{File.basename(fillename)[5..6]}/#{File.basename(fillename)[8..9]}/#{gzfile}"
+      bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(filename)[0..3]}/#{File.basename(filename)[5..6]}/#{File.basename(filename)[8..9]}"]
+      puts "/#{dir}/#{File.basename(filename)[0..3]}/#{File.basename(filename)[5..6]}/#{File.basename(filename)[8..9]}/#{gzfile}"
       filename = File.basename(gzfile)
       o = bucket.objects[filename]
       o.write(:file => filename)
