@@ -129,16 +129,13 @@ if config[search_keyword]
       sleep(2)
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
-      limit += 1
     rescue Twitter::Error::InternalServerError => e
       sleep(2)
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
-      limit += 1
     rescue Twitter::Error::ClientError => e
       arr_error[error_num] = ["execute_time:#{day}", "error_time:#{Time.now}", "message:#{e}"].join("\t")
       error_num += 1
-      limit += 1
       sleep(2)
     end
     arr_check << last_tw_id if last_tw_id > 0
