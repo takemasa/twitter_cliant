@@ -62,7 +62,7 @@ def ec2s3(keyword)
       }
       p "delete! #{fillename} ------------------"
       File.delete(fillename)
-    elsif File.basename(fillename) == updatingfile
+    else
       p "keep! #{File.basename(fillename)}^^^^^^^^^^^^^^^^^^^"
     end
     # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
