@@ -52,7 +52,6 @@ def ec2s3(keyword)
   Dir.glob("*.csv").each {|all_csv_file|
     filename = all_csv_file
     if File.basename(filename) != updatingfile
-      gzfile = "#{File.basename(all_csv_file)}.gz"
       File.open(all_csv_file,'a+') {|f|
         Zlib::GzipWriter.open("#{all_csv_file}.gz") {|gz|
           gz.write f.read
@@ -60,17 +59,17 @@ def ec2s3(keyword)
       }
       p "delete! #{filename} ------------------"
       File.delete(filename)
-    else
-      p "keep! #{File.basename(filename)}^^^^^^^^^^^^^^^^^^^"
-    end
-    # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
-    if gzfile
+
+      # 作成したgzを、ファイル名に基づいてs3内に作成したデレクトリに格納し、元ファイルを後削除
+      gzfile = "#{File.basename(all_csv_file)}.gz"
       bucket = s3.buckets["dsb-twitter-test/tweets/#{dir}/#{File.basename(filename)[0..3]}/#{File.basename(filename)[5..6]}/#{File.basename(filename)[8..9]}"]
       puts "/#{dir}/#{File.basename(filename)[0..3]}/#{File.basename(filename)[5..6]}/#{File.basename(filename)[8..9]}/#{gzfile}"
       filename = File.basename(gzfile)
       o = bucket.objects[filename]
       o.write(:file => filename)
       File.delete(gzfile)
+    else
+      p "keep! #{File.basename(filename)}^^^^^^^^^^^^^^^^^^^"
     end
   }
 end
