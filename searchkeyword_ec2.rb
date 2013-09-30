@@ -1,6 +1,7 @@
+require "fileutils"
+
 # "dir/date/*.csv"ファイルをkeywordで検索し、ヒットしたものを出力
 def search_keyword(keyword,dir,date)
-	require "fileutils"
 	day = Time.now
 
 	hit = []
