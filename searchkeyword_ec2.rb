@@ -18,12 +18,12 @@ def search_keyword(keyword,dir,date)
 			i = 0
 			k = 0
 			csv_length = 0
-			File.open("#{all_csv_file}") {|f|
+			File.open(all_csv_file) {|f|
 				while line = f.gets
-					if !line.include?("#{keyword}")# && !(/【定期】/ =~ line)
+					if !line.include?(keyword)# && !(/【定期】/ =~ line)
 						k += 1
 					else
-						hit[i]  = "#{line}" 
+						hit[i]  = line 
 						i += 1
 						s += 1
 					end
