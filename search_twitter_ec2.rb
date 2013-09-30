@@ -100,13 +100,13 @@ if config[search_keyword]
           status.retweet_count,
           status.user.id
         ]
-        # 位置情報("")が存在する場合は追加、しない場合は","を挿入し、","で連結
+        # 位置情報("")が存在する場合は追加、しない場合は","を挿入し、最後に総tweet数をレコードに追加して","で連結
         if !status.place
           record_ary << ","
         else
           record_ary << status.place.full_name
-        end         
-
+        end
+        record_ary << status.user.statuses_count
         arr_main[main_num] = record_ary.join(",")
       
         if until_num == 0
