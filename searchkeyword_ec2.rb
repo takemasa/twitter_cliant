@@ -45,7 +45,7 @@ def search_keyword(keyword,dir,date)
 
 		num_num = 0
 		until num_num >= sum_num 
-		File.open("#{dir}_no_#{keyword}/sum/sum_#{dir}_no_#{keyword}_#{day.month}#{day.day}.csv",'a'){|sum|
+		File.open("#{dir}_in_#{keyword}/sum/sum_#{dir}_in_#{keyword}_#{day.month}#{day.day}.csv",'a'){|sum|
 				sum.write sum_ary[num_num]
 			}
 			num_num += 1
