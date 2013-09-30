@@ -1,4 +1,5 @@
 require "fileutils"
+require 'csv'
 
 # "dir/date/*.csv"ファイルをkeywordで検索し、ヒットしたものを出力
 def search_keyword(keyword,dir,date)
@@ -7,7 +8,6 @@ def search_keyword(keyword,dir,date)
 	hit = []
 	csv_length = 0
 	all_csv_length = 0
-	sum_num = 0
 	sum_ary = []
 	s = 0
 	if keyword  != nil && dir != nil
@@ -32,9 +32,8 @@ def search_keyword(keyword,dir,date)
 			}
 
 			puts "sum:#{csv_length} Hit:#{i} No:#{k} #{File.basename(all_csv_file)}"
-			sum_ary[sum_num] = "#{i},#{k},#{csv_length},#{File.basename(all_csv_file)}\n"
+			sum_ary <<  [i,k,csv_length,File.basename(all_csv_file)}]
 			all_csv_length += csv_length
-			sum_num += 1
 			num = 0
 			until num >= i
 				File.open("#{dir}_in_#{keyword}/#{File.basename(all_csv_file)}",'a'){|hit_word|
@@ -44,13 +43,11 @@ def search_keyword(keyword,dir,date)
 			end
 		}
 
-		num_num = 0
-		until num_num >= sum_num 
-		File.open("#{dir}_in_#{keyword}/sum/sum_#{dir}_in_#{keyword}_#{day.month}#{day.day}.csv",'a'){|sum|
-				sum.write sum_ary[num_num]
-			}
-			num_num += 1
-		end
+		CSV.open("#{dir}_in_#{keyword}/sum/sum_#{dir}_in_#{keyword}_#{day.month}#{day.day}.csv",'a'){|sum|
+      sum_ary.each do |ary|
+        sum << ary
+      end
+    }
 
 		File.open("#{dir}_in_#{keyword}/sum/sum_#{dir}_in_#{keyword}.txt",'a'){|sum|
 			sum.write "#{day}\nキーワード: #{keyword}\ntotal_sum  = #{s} / #{all_csv_length}\n"
