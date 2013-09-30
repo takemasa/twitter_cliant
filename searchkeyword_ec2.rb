@@ -34,13 +34,11 @@ def search_keyword(keyword,dir,date)
 			puts "sum:#{csv_length} Hit:#{i} No:#{k} #{File.basename(all_csv_file)}"
 			sum_ary <<  [i,k,csv_length,File.basename(all_csv_file)}]
 			all_csv_length += csv_length
-			num = 0
-			until num >= i
-				File.open("#{dir}_in_#{keyword}/#{File.basename(all_csv_file)}",'a'){|hit_word|
-					hit_word.write hit[num]
+      hit.each {|hit_line|
+				File.open("#{dir}_in_#{keyword}/#{File.basename(all_csv_file)}",'a'){|hit_file|
+					hit_file.write hit_line
 				}
-				num += 1
-			end
+      }
 		}
 
 		CSV.open("#{dir}_in_#{keyword}/sum/sum_#{dir}_in_#{keyword}_#{day.month}#{day.day}.csv",'a'){|sum|
