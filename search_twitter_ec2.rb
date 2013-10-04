@@ -84,14 +84,20 @@ if config[search_keyword]
         else
           text = "RT #{status.retweeted_status.text}"
         end
-        text = text.gsub(/(\r\n|\r|\n)/," ")
-        text = text.gsub(",","、")
-        text = text.gsub("\"","”")
+        text = text.gsub(/(\r\n|\r|\n)/," ").gsub(",","、").gsub("\"","”")
+
         # クライアント
         if /<.*>/ =~ status.source
           client = status.source.gsub(/<.*">/,"").gsub(/<\/a>/,"").gsub(/(\r\n|\r|\n)/," ").gsub(",","、").gsub("\"","”")
         else
           client = status.source
+        end
+
+        # 位置情報("")が存在する場合は追加、しない場合は","を挿入し、","で連結
+        if !status.place
+          place = ","
+        else
+          place =  status.place.full_name
         end
 
 
@@ -104,15 +110,11 @@ if config[search_keyword]
           status.user.friends_count,
           status.user.followers_count,
           status.retweet_count,
-          status.user.id
+          status.user.id,
+          place,
+          status.user.statuses_count,
+          client
         ]
-        # 位置情報("")が存在する場合は追加、しない場合は","を挿入し、最後に総tweet数をレコードに追加して","で連結
-        if !status.place
-          record_ary << ","
-        else
-          record_ary << status.place.full_name
-        end
-        record_ary << status.user.statuses_count
         arr_main[main_num] = record_ary.join(",")
       
         if until_num == 0
