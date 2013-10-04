@@ -1,6 +1,6 @@
-.bundle
+*.bundle
 /*.lock
 /vendor/bundle
-.yaml
+*.yaml
 /work
 /tweets

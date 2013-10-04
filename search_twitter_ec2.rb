@@ -78,7 +78,7 @@ if config[search_keyword]
     until_num = 0
     begin
       Twitter.search(search_keyword, :count => 100, :result_type => "recent", :since_id => since_id, :lang=>"ja").results.reverse.each do |status|
-        # テキストのクリーニング
+        # ツイートとクライアント情報のクリーニング
         if status.retweeted_status.nil?
           text = status.text
         else
@@ -87,6 +87,12 @@ if config[search_keyword]
         text = text.gsub(/(\r\n|\r|\n)/," ")
         text = text.gsub(",","、")
         text = text.gsub("\"","”")
+        # クライアント
+        if /<.*>/ =~ status.source
+          client = status.source.gsub(/<.*">/,"").gsub(/<\/a>/,"").gsub(/(\r\n|\r|\n)/," ").gsub(",","、").gsub("\"","”")
+        else
+          client = status.source
+        end
 
 
         # レコードの項目
